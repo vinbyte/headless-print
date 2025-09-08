@@ -29,7 +29,7 @@ services:
       resources:
         limits:
           cpus: '1.0'    # Limit to 1 CPU cores
-          memory: 2G     # Limit to 2GB of memory
+          memory: 1G     # Limit to 1GB of memory
         reservations:
           cpus: '0.5'    # Reserve at least 0.5 CPU cores
           memory: 512M   # Reserve at least 512MB of memory

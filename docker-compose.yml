@@ -1,0 +1,35 @@
+services:
+  chrome:
+    image: chromedp/headless-shell:latest
+    container_name: headless-chrome
+    ports:
+      - "9222:9222"
+    shm_size: "2gb"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '3.0'    # Limit to 3 CPU cores
+          memory: 2G     # Limit to 2GB of memory
+        reservations:
+          cpus: '1.0'    # Reserve at least 1 CPU cores
+          memory: 1GB    # Reserve at least 1GB of memory
+
+  pdf-generator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pdf-generator
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./index.html:/app/index.html
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'    # Limit to 1 CPU cores
+          memory: 2G     # Limit to 2GB of memory
+        reservations:
+          cpus: '0.5'    # Reserve at least 0.5 CPU cores
+          memory: 512M   # Reserve at least 512MB of memory

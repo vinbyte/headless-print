@@ -9,7 +9,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"runtime"
 	"sync"
 	"time"
 
@@ -133,36 +132,18 @@ func (p *TabPool) Close() {
 	p.browserCancel()
 }
 
-// Calculate optimal tab pool size based on available resources
-func calculateOptimalPoolSize() int {
-	// Get number of CPUs available to the container
-	numCPU := runtime.NumCPU()
-
-	// Each Chrome tab can use approximately 0.25 CPU cores
-	// So we can have 4 tabs per CPU core
-	optimalSize := numCPU * 4
-
-	// Limit to a reasonable range
-	if optimalSize < 4 {
-		optimalSize = 4 // Minimum 4 tabs
-	} else if optimalSize > 32 {
-		optimalSize = 32 // Maximum 32 tabs
-	}
-
-	return optimalSize
-}
-
 func main() {
 	useCDPServer := flag.Bool("use-cdp-server", false, "use cdp server")
 	url := flag.String("url", "ws://127.0.0.1:9222", "devtools url")
+	tabCount := flag.Int("tab", 6, "number of browser tabs to use")
 	flag.Parse()
 	cdpServerURL = *url
 	isUseCDPServer = *useCDPServer
 
-	// Initialize the tab pool with optimal size based on available resources
+	// Initialize the tab pool with the specified tab count
 	log.Println("Initializing browser tab pool...")
-	poolSize := calculateOptimalPoolSize()
-	log.Printf("Calculated optimal pool size: %d tabs based on available resources", poolSize)
+	poolSize := *tabCount
+	log.Printf("Using pool size: %d tabs", poolSize)
 
 	var err error
 	tabPool, err = NewTabPool(poolSize)

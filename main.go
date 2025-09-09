@@ -75,7 +75,12 @@ func NewTabPool(size int) (*TabPool, error) {
 	allocCtx, cancel := chromedp.NewExecAllocator(context.Background(), opts...)
 	if isUseCDPServer {
 		log.Println("Using CDPServer:", cdpServerURL)
-		allocCtx, cancel = chromedp.NewRemoteAllocator(context.Background(), cdpServerURL)
+		// Create a remote allocator with NoModifyURL option
+		allocCtx, cancel = chromedp.NewRemoteAllocator(
+			context.Background(),
+			cdpServerURL,
+			// chromedp.NoModifyURL,
+		)
 	}
 
 	// Create browser context
